@@ -5,7 +5,7 @@ import {
   useMatches,
   useParams,
   useNavigation,
-} from '@remix-run/react';
+} from "@remix-run/react";
 
 /**
  * Domain types
@@ -31,7 +31,7 @@ function ExpenseForm() {
    * Get expenses from parent route: routes/_app.expenses
    * Remix doesn't strongly type match.data, so we cast safely.
    */
-  const expenses = matches.find((match) => match.id === 'routes/_app.expenses')
+  const expenses = matches.find((match) => match.id === "routes/_app.expenses")
     ?.data as Expense[] | undefined;
 
   const expenseData = expenses?.find((expense) => expense.id === params.id);
@@ -44,57 +44,57 @@ function ExpenseForm() {
     ? {
       title: expenseData.title,
       amount: expenseData.amount,
-      date: expenseData.date.toISOString(),
+      date: new Date(expenseData.date).toISOString(),
     }
     : {
-      title: '',
-      amount: '',
-      date: '',
+      title: "",
+      amount: "",
+      date: "",
     };
 
-  const isSubmitting = navigation.state !== 'idle';
+  const isSubmitting = navigation.state !== "idle";
 
   return (
     <Form
-      method={expenseData ? 'patch' : 'post'}
-      className='form'
-      id='expense-form'
+      method={expenseData ? "patch" : "post"}
+      className="form"
+      id="expense-form"
     >
       <p>
-        <label htmlFor='title'>Expense Title</label>
+        <label htmlFor="title">Expense Title</label>
         <input
-          type='text'
-          id='title'
-          name='title'
+          type="text"
+          id="title"
+          name="title"
           required
           maxLength={30}
           defaultValue={defaultValues.title}
         />
       </p>
 
-      <div className='form-row'>
+      <div className="form-row">
         <p>
-          <label htmlFor='amount'>Amount</label>
+          <label htmlFor="amount">Amount</label>
           <input
-            type='number'
-            id='amount'
-            name='amount'
-            min='0'
-            step='0.01'
+            type="number"
+            id="amount"
+            name="amount"
+            min="0"
+            step="0.01"
             required
             defaultValue={defaultValues.amount}
           />
         </p>
         <p>
-          <label htmlFor='date'>Date</label>
+          <label htmlFor="date">Date</label>
           <input
-            type='date'
-            id='date'
-            name='date'
+            type="date"
+            id="date"
+            name="date"
             max={today}
             required
             defaultValue={
-              defaultValues.date ? defaultValues.date.slice(0, 10) : ''
+              defaultValues.date ? defaultValues.date.slice(0, 10) : ""
             }
           />
         </p>
@@ -106,14 +106,14 @@ function ExpenseForm() {
           ))}
         </ul>
       )}
-      <div className='form-actions'>
+      <div className="form-actions">
         <button
           disabled={isSubmitting}
-          formMethod={expenseData ? 'patch' : 'post'}
+          formMethod={expenseData ? "patch" : "post"}
         >
-          {isSubmitting ? 'Saving...' : 'Save Expense'}
+          {isSubmitting ? "Saving..." : "Save Expense"}
         </button>
-        <Link to='..'>Cancel</Link>
+        <Link to="..">Cancel</Link>
       </div>
     </Form>
   );
