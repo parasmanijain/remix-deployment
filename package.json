@@ -11,8 +11,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@netlify/edge-functions": "^3.0.3",
     "@netlify/functions": "^5.1.2",
     "@netlify/remix-adapter": "^2.7.0",
+    "@netlify/remix-edge-adapter": "^3.5.0",
     "@netlify/remix-runtime": "^2.4.0",
     "@prisma/client": "^6.19.1",
     "@remix-run/node": "^2.17.2",
@@ -27,8 +29,8 @@
     "@remix-run/dev": "^2.17.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.3",
-    "@types/react": "^18.3.27",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.50.1",
     "autoprefixer": "^10.4.23",
