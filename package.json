@@ -4,18 +4,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix init && remix vite:build",
-    "dev": "remix init && remix vite:dev",
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix init && netlify serve",
+    "start": "netlify serve",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@netlify/edge-functions": "^3.0.3",
     "@netlify/functions": "^5.1.2",
     "@netlify/remix-adapter": "^2.7.0",
-    "@netlify/remix-edge-adapter": "^3.5.0",
-    "@netlify/remix-runtime": "^2.4.0",
     "@prisma/client": "^6.19.1",
     "@remix-run/node": "^2.17.2",
     "@remix-run/react": "^2.17.2",
