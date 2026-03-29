@@ -6,24 +6,31 @@ import {
   useParams,
   useNavigation,
 } from "@remix-run/react";
+import type { FC } from "react";
 
 /**
  * Domain types
  */
-type Expense = {
-  id: string;
-  title: string;
-  amount: number;
-  date: Date;
-};
+interface Expense {
+  readonly id: string;
+  readonly title: string;
+  readonly amount: number;
+  readonly date: Date;
+}
 
 type ValidationErrors = Record<string, string> | undefined;
 
-function ExpenseForm() {
+interface ExpenseFormDefaultValues {
+  readonly title: string;
+  readonly amount: string | number;
+  readonly date: string;
+}
+
+const ExpenseForm: FC = () => {
   const today = new Date().toISOString().slice(0, 10);
 
   const validationErrors = useActionData<ValidationErrors>();
-  const params = useParams<{ id?: string }>();
+  const params = useParams<{ readonly id?: string }>();
   const navigation = useNavigation();
   const matches = useMatches();
 
@@ -32,7 +39,7 @@ function ExpenseForm() {
    * Remix doesn't strongly type match.data, so we cast safely.
    */
   const expenses = matches.find((match) => match.id === "routes/_app.expenses")
-    ?.data as Expense[] | undefined;
+    ?.data as readonly Expense[] | undefined;
 
   const expenseData = expenses?.find((expense) => expense.id === params.id);
 
@@ -40,17 +47,17 @@ function ExpenseForm() {
     return <p>Invalid expense id.</p>;
   }
 
-  const defaultValues = expenseData
+  const defaultValues: ExpenseFormDefaultValues = expenseData
     ? {
       title: expenseData.title,
       amount: expenseData.amount,
       date: new Date(expenseData.date).toISOString(),
-    }
+    } as const
     : {
       title: "",
       amount: "",
       date: "",
-    };
+    } as const;
 
   const isSubmitting = navigation.state !== "idle";
 
@@ -117,6 +124,6 @@ function ExpenseForm() {
       </div>
     </Form>
   );
-}
+};
 
 export default ExpenseForm;

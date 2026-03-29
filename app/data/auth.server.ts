@@ -1,28 +1,28 @@
-import bcrypt from 'bcryptjs';
-import { createCookieSessionStorage, redirect } from '@remix-run/node';
-import { prisma } from './database.server';
+import bcrypt from "bcryptjs";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { prisma } from "./database.server";
 
 const { hash, compare } = bcrypt;
 
 /* ---------------- Env ---------------- */
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
+const SESSION_SECRET = process.env["SESSION_SECRET"];
 
 if (!SESSION_SECRET) {
-  throw new Error('SESSION_SECRET must be set');
+  throw new Error("SESSION_SECRET must be set");
 }
 
 /* ---------------- Session ---------------- */
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
-    name: '__session',
-    secure: process.env.NODE_ENV === 'production',
+    name: "__session",
+    secure: process.env.NODE_ENV === "production",
     secrets: [SESSION_SECRET],
-    sameSite: 'lax',
+    sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60, // 30 days
     httpOnly: true,
-    path: '/',
+    path: "/",
   },
 });
 
@@ -41,10 +41,10 @@ interface AuthError extends Error {
 
 async function createUserSession(userId: string, redirectPath: string) {
   const session = await sessionStorage.getSession();
-  session.set('userId', userId);
+  session.set("userId", userId);
   return redirect(redirectPath, {
     headers: {
-      'Set-Cookie': await sessionStorage.commitSession(session),
+      "Set-Cookie": await sessionStorage.commitSession(session),
     },
   });
 }
@@ -52,14 +52,14 @@ async function createUserSession(userId: string, redirectPath: string) {
 /* ---------------- Session Access ---------------- */
 
 export async function getUserFromSession(
-  request: Request
+  request: Request,
 ): Promise<string | null> {
   const session = await sessionStorage.getSession(
-    request.headers.get('Cookie')
+    request.headers.get("Cookie"),
   );
 
-  const userId = session.get('userId');
-  if (typeof userId !== 'string') {
+  const userId = session.get("userId");
+  if (typeof userId !== "string") {
     return null;
   }
 
@@ -68,12 +68,12 @@ export async function getUserFromSession(
 
 export async function destroyUserSession(request: Request) {
   const session = await sessionStorage.getSession(
-    request.headers.get('Cookie')
+    request.headers.get("Cookie"),
   );
 
-  return redirect('/', {
+  return redirect("/", {
     headers: {
-      'Set-Cookie': await sessionStorage.destroySession(session),
+      "Set-Cookie": await sessionStorage.destroySession(session),
     },
   });
 }
@@ -81,7 +81,7 @@ export async function destroyUserSession(request: Request) {
 export async function requireUserSession(request: Request): Promise<string> {
   const userId = await getUserFromSession(request);
   if (!userId) {
-    throw redirect('/auth?mode=login');
+    throw redirect("/auth?mode=login");
   }
 
   return userId;
@@ -96,7 +96,7 @@ export async function signup({ email, password }: AuthCredentials) {
 
   if (existingUser) {
     const error: AuthError = new Error(
-      'A user with the provided email address exists already.'
+      "A user with the provided email address exists already.",
     );
     error.status = 422;
     throw error;
@@ -110,7 +110,7 @@ export async function signup({ email, password }: AuthCredentials) {
       password: passwordHash,
     },
   });
-  return createUserSession(user.id, '/expenses');
+  return createUserSession(user.id, "/expenses");
 }
 
 export async function login({ email, password }: AuthCredentials) {
@@ -120,7 +120,7 @@ export async function login({ email, password }: AuthCredentials) {
 
   if (!existingUser) {
     const error: AuthError = new Error(
-      'Could not log you in, please check the provided credentials.'
+      "Could not log you in, please check the provided credentials.",
     );
     error.status = 401;
     throw error;
@@ -130,11 +130,11 @@ export async function login({ email, password }: AuthCredentials) {
 
   if (!passwordCorrect) {
     const error: AuthError = new Error(
-      'Could not log you in, please check the provided credentials.'
+      "Could not log you in, please check the provided credentials.",
     );
     error.status = 401;
     throw error;
   }
 
-  return createUserSession(existingUser.id, '/expenses');
+  return createUserSession(existingUser.id, "/expenses");
 }
